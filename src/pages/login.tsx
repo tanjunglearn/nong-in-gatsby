@@ -1,12 +1,34 @@
 import * as React from "react"
+import { useStaticQuery, graphql } from "gatsby"
 import type { HeadFC, PageProps } from "gatsby"
 import LayoutUnauthenticated from "../layouts/unauthenticated"
+import Seo from '../components/seo'
 
-const pageTitle: string = "Login Page"
+interface PageTitle {
+  pageTitle: string
+}
+
+const usePageTitle = ({pageTitle}: PageTitle) => {
+  const data = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
+
+  const pageTitle1: string = `${pageTitle} | ${data.site.siteMetadata.title}`
+
+  return pageTitle1
+}
 
 const LoginPage: React.FC<PageProps> = () => {
+  const pageTitle = usePageTitle({pageTitle: 'Login'})
+
   return (
-    <LayoutUnauthenticated>
+    <LayoutUnauthenticated pageTitle={pageTitle}>
       <section>
         <div>anu</div>
       </section>
@@ -16,4 +38,8 @@ const LoginPage: React.FC<PageProps> = () => {
 
 export default LoginPage
 
-export const Head: HeadFC = () => <title>{pageTitle}</title>
+export const Head: HeadFC = () => {
+  const pageTitle = usePageTitle({pageTitle: 'Login'})
+
+  return <Seo pageTitle={pageTitle} />
+}
